@@ -31,13 +31,11 @@ let scrape = async () => {
     });
 
     browser.close();
-    console.log("RES RESULT: ", result)
     return result; 
 };
 
 let scrapeTwo = async (titles) => {
     if(!titles) return
-    console.log("Scrape two")
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
 
@@ -91,11 +89,9 @@ scrape().then((value) => {
     let arrayOfData = []
     let newInterval = setInterval(() => {
         scrapeTwo(value[i]).then((valueTwo) => {
-            console.log(valueTwo)
             arrayOfData.push(valueTwo)
             if(!valueTwo){
                 clearInterval(newInterval)
-                console.log("HELLO????", i)
                 setTimeout(() => {
                     regexAndPrintResults(arrayOfData)
                 }, 1500)
@@ -112,15 +108,12 @@ function regexAndPrintResults(arrayOfData){
     let avgDamageData = []
     let regexMaxDamage = /(\d+)(?!.*\d)/
     let regexMinDamage = /\d+/
-    console.log("ARRAY DATA", arrayOfData[0])
     for(let i = 0; i < arrayOfData.length; i++){
         if(arrayOfData[i]){
             let minDamage = arrayOfData[i].data[0].title.match(regexMinDamage)
             let maxDamage = arrayOfData[i].data[0].title.match(regexMaxDamage)
-            console.log("mached", minDamage, maxDamage)
             minDamage = parseInt(minDamage[0])
             maxDamage = parseInt(maxDamage[0])
-            console.log("avg", (minDamage+maxDamage)/2)
             avgDamageData.push({damage: (minDamage+maxDamage)/2, name: arrayOfData[i].name[0].title, level: arrayOfData[i].level[0].title})
         }
     }
